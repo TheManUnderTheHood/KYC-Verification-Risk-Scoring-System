@@ -33,4 +33,7 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private KYCProfile kycProfile;
+
+    @Column(nullable = false)
+    private boolean isAccountFunded = false;
 }

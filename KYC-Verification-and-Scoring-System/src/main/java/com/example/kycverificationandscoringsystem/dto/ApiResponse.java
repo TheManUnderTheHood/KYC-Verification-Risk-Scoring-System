@@ -1,13 +1,16 @@
 package com.example.kycverificationandscoringsystem.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
-public class ErrorResponse {
-    private LocalDateTime timestamp;
+@NoArgsConstructor
+public class ApiResponse {
+
+    private boolean success;
     private String message;
-    private String details;
 }
