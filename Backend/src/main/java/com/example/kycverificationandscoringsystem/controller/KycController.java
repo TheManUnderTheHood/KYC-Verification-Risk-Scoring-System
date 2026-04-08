@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +28,24 @@ public class KycController {
             Authentication authentication) {
         String userEmail = authentication.getName();
         return ResponseEntity.ok(kycService.submitKyc(request, userEmail));
+    }
+
+    // NEW ENDPOINT: Returns both the KYC status AND if the account is funded
+    @GetMapping("/api/user/kyc/status")
+    public ResponseEntity<Map<String, Object>> getMyKycStatus(Authentication authentication) {
+        String userEmail = authentication.getName();
+
+        KycResponse myKyc = kycService.getMyKyc(userEmail);
+        boolean isFunded = kycService.isUserFunded(userEmail);
+
+        if (myKyc != null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", myKyc.getStatus().name());
+            response.put("isFunded", isFunded);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.noContent().build(); // 204 No Content
+        }
     }
 
     @GetMapping("/api/admin/kyc/pending")

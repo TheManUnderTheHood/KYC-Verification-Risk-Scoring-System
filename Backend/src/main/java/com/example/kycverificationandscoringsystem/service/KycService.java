@@ -69,6 +69,23 @@ public class KycService {
         return new ApiResponse(true, "KYC Submitted successfully.");
     }
 
+    // NEW METHOD: Fetch the current user's actual KYC status from the database
+    public KycResponse getMyKyc(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return kycProfileRepository.findByUserId(user.getId())
+                .map(this::mapToDto)
+                .orElse(null); // Returns null if they haven't submitted yet
+    }
+
+    // NEW METHOD: Check if the user's account is already funded
+    public boolean isUserFunded(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.isAccountFunded();
+    }
+
     private String saveFileLocally(MultipartFile file) {
         try {
             Path uploadDir = Paths.get("uploads").toAbsolutePath().normalize();
