@@ -1,53 +1,64 @@
-# 🛡️ KYC Verification & Risk Scoring System
+# 🛡️ Full-Stack KYC Verification & Neo-Bank Onboarding System
 
-A robust backend REST API built with Spring Boot that simulates a real-world financial compliance workflow. This system handles user onboarding, secure document uploads, and features an **Automated Risk Rule Engine** to flag potential fraud based on user demographics and data.
+A complete, enterprise-grade full-stack application that simulates a real-world financial compliance and onboarding workflow. This system handles secure user registration, automated fraud risk scoring, manual admin reviews, and final wallet activation via Stripe payments.
 
 ## 🌟 Key Features
 
-*   **Stateless Authentication:** Secure login and registration using JSON Web Tokens (JWT).
-*   **Role-Based Access Control (RBAC):** Strict separation between normal `USER` endpoints and protected `ADMIN` endpoints.
-*   **Automated Risk Engine:** Automatically calculates a risk score (LOW, MEDIUM, HIGH) upon KYC submission based on age, occupation, and document completeness.
-*   **File Storage:** Processes `multipart/form-data` to securely save physical uploaded identity documents (PAN/Aadhaar) to the local server.
-*   **Cloud Database Integration:** Fully integrated with a global Cloud MySQL database using Spring Data JPA.
-*   **Interactive API Docs:** Built-in Swagger UI for testing endpoints without Postman.
+*   **🎨 Modern Animated Frontend:** Built with React, Vite, and **Tailwind CSS v4**. Features premium glassmorphism UI, staggered table reveals, and physics-based animations using **Framer Motion**.
+*   **💳 Payment Integration (Stripe):** Once KYC is approved, users must make a simulated $50 initial deposit via a secure Stripe Checkout session to activate their neo-bank wallet.
+*   **🔒 Stateless Authentication (JWT):** Secure login and registration using JSON Web Tokens.
+*   **🛡️ Role-Based Access Control (RBAC):** Strict security separation between normal `USER` dashboards and protected `ADMIN` review panels.
+*   **🧠 Automated Risk Engine:** Automatically calculates a risk score (LOW, MEDIUM, HIGH) upon KYC submission based on age, occupation, and document completeness.
+*   **📁 Secure File Storage:** Processes `multipart/form-data` to securely upload and save physical identity documents (PAN/Aadhaar).
 
 ## 🛠️ Tech Stack
 
-*   **Language:** Java 17
-*   **Framework:** Spring Boot 3.x
+### Frontend
+*   **Framework:** React + Vite
+*   **Styling:** Tailwind CSS v4 (Latest)
+*   **Animations:** Framer Motion
+*   **Icons & Routing:** Lucide React, React Router, Axios
+
+### Backend
+*   **Language & Framework:** Java 17, Spring Boot 3.x
 *   **Security:** Spring Security & JJWT (JSON Web Tokens)
 *   **Database:** Cloud MySQL & Spring Data JPA (Hibernate)
+*   **Payment Gateway:** Stripe Java SDK
 *   **Documentation:** OpenAPI (Swagger 3)
-*   **Tooling:** Maven, Lombok, Jakarta Validation
 
-## 🧠 How the Risk Engine Works
+## 🚦 The Onboarding User Journey
 
-Unlike a basic CRUD application, this project includes a **Business Rule Engine**. When a user submits their KYC, the system calculates a score:
-
-1.  **Age Check:** Minors (< 18) receive **+80 points**. Young adults (< 21) receive **+20 points**.
-2.  **Occupation Check:** High-risk sectors (e.g., Politicians, Casinos, Gambling) receive **+30 points**.
-3.  **Document Check:** Submitting fewer than 2 documents adds **+25 points**.
-
-**Classification:**
-*   `0 - 19 Points` = **LOW RISK**
-*   `20 - 59 Points` = **MEDIUM RISK**
-*   `60+ Points` = **HIGH RISK**
+1.  **Registration:** User creates an account and receives a secure JWT.
+2.  **Identity Verification:** User submits PII (PAN, Aadhaar) and uploads document images.
+3.  **Algorithmic Scoring:** The backend Business Rule Engine calculates a fraud risk score.
+    *   *Minors (+80 pts), High-Risk Jobs like Casinos (+30 pts), Missing Docs (+25 pts).*
+4.  **Compliance Review:** Admin logs in, views the risk queue, and Approves or Rejects the profile.
+5.  **Wallet Activation:** The user is prompted to pay a $50 deposit via **Stripe**.
+6.  **Success:** Backend verifies the Stripe webhook/session and officially activates the user's account.
 
 ## 🔌 API Endpoints Reference
 
 ### 🔓 Authentication (Public)
-*   `POST /api/auth/register` - Create a new user account (Specify role as `USER` or `ADMIN`).
-*   `POST /api/auth/login` - Authenticate and receive a JWT token.
+*   `POST /api/auth/register` - Create account (`USER` or `ADMIN`)
+*   `POST /api/auth/login` - Authenticate and receive JWT
 
 ### 👤 User Operations (Requires `USER` Token)
-*   `POST /api/user/kyc/submit` - Submit KYC details (PAN, Aadhaar, DOB) and upload physical document images.
+*   `GET /api/user/kyc/status` - Fetch real-time KYC & Funding status
+*   `POST /api/user/kyc/submit` - Submit KYC text data and physical files
+*   `POST /api/user/payment/initiate` - Generate a Stripe Checkout URL
+*   `GET /api/user/payment/success` - Verify Stripe payment and activate wallet
 
 ### 🛡️ Admin Operations (Requires `ADMIN` Token)
-*   `GET /api/admin/kyc/pending` - Fetch a list of all applications awaiting manual review.
-*   `GET /api/admin/kyc/high-risk` - Fetch only users flagged as `HIGH RISK` by the automated engine.
-*   `PUT /api/admin/kyc/{id}/review` - Approve or Reject a specific KYC application and add review notes.
+*   `GET /api/admin/kyc/pending` - Fetch applications awaiting review
+*   `GET /api/admin/kyc/high-risk` - Fetch applications flagged as `HIGH RISK`
+*   `PUT /api/admin/kyc/{id}/review` - Approve or Reject a specific application
 
 ## 💻 How to Run Locally
+
+### Prerequisites
+*   Java 17 & Maven
+*   Node.js (v20+)
+*   A free [Stripe](https://stripe.com/) Developer Account (Test Mode)
 
 ### 1. Clone the repository
 ```bash
